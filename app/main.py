@@ -9,6 +9,7 @@ from app.wavetrend_engine import WaveTrendEngine
 from app.groww_client import fetch_history_in_batches
 from app.database import signals_col
 from app.engine_registry import active_engines, engine_status
+from app.history_client import fetch_historic_signals
 
 import datetime
 import pytz
@@ -39,6 +40,9 @@ def home(request: Request):
 # ==========================
 # START ENGINE
 # ==========================
+# ==========================
+# START ENGINE
+# ==========================
 @app.post("/start")
 def start_engine(
     background_tasks: BackgroundTasks,
@@ -58,67 +62,59 @@ def start_engine(
             })
 
         # ==========================
-        # LOAD 1 MONTH HISTORY
+        # FETCH HISTORY FROM VERCEL API
         # ==========================
-        ist = pytz.timezone("Asia/Kolkata")
-        now = datetime.datetime.now(ist)
-        past = now - datetime.timedelta(days=30)
-
-        start_ms = int(past.timestamp() * 1000)
-        end_ms = int(now.timestamp() * 1000)
-
-        candles = None
         attempts = 0
+        history_data = None
 
         while attempts < 3:
             try:
-                candles = fetch_history_in_batches(
-                    symbol,
-                    1,
-                    past,
-                    now
+                history_data = fetch_historic_signals(
+                    index=index,
+                    year=str(expiry_date.year)[-2:],
+                    month=expiry_date.strftime("%b").upper(),
+                    strike=strike,
+                    option_type=option_type
                 )
-                if candles:
+
+                if history_data:
                     break
+
             except Exception as e:
-                print(f"⚠ Fetch attempt {attempts+1} failed:", e)
+                print(f"⚠ History API attempt {attempts+1} failed:", e)
 
             attempts += 1
             time.sleep(1)
 
-        if not candles:
+        if not history_data:
             return JSONResponse(
-                {"error": "Failed to fetch history after 3 attempts"},
+                {"error": "Failed to fetch historic signals after 3 attempts"},
                 status_code=500
             )
 
         # ==========================
-        # INITIALIZE ENGINE
-        # ==========================
-        engine = WaveTrendEngine()
-        engine.load_history(candles)
-
-        # print("History candles loaded:", len(candles))
-        # print(candles[-5:])
-
-        # ==========================
-        # CLEAR OLD SIGNALS (IMPORTANT)
+        # CLEAR OLD SIGNALS
         # ==========================
         signals_col.delete_many({"symbol": symbol})
 
         # ==========================
-        # GENERATE HISTORICAL SIGNALS
+        # INSERT HISTORICAL SIGNALS
         # ==========================
-        engine.generate_historical_signals(
-            symbol,
-            lambda data: signals_col.insert_one(data)
-        )
+        for signal in history_data.get("signals", []):
+            signals_col.insert_one(signal)
 
-        print("Historical signals generated")
+        print("Historical signals inserted:",
+              history_data.get("total_signals", 0))
 
         # ==========================
-        # REGISTER ENGINE
+        # INITIALIZE ENGINE FOR LIVE MODE
         # ==========================
+        engine = WaveTrendEngine()
+
+        # Optional: you can skip full history load
+        # Or fetch only today's candles for base state
+        engine.load_history([])
+
         active_engines[symbol] = engine
         engine_status[symbol] = "running"
 
@@ -129,7 +125,12 @@ def start_engine(
         # ==========================
         background_tasks.add_task(start_live, symbol, engine)
 
-        return {"status": "Started", "symbol": symbol}
+        return {
+            "status": "Started",
+            "symbol": symbol,
+            "historical_signals_loaded":
+                history_data.get("total_signals", 0)
+        }
 
     except Exception as e:
         print("❌ Start engine error:", e)
@@ -137,8 +138,7 @@ def start_engine(
             {"error": str(e)},
             status_code=500
         )
-
-
+        
 # ==========================
 # PAUSE ENGINE
 # ==========================
