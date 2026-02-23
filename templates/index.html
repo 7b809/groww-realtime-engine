@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Options WaveTrend Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark text-light">
+
+<div class="container mt-5">
+
+    <h3 class="mb-4">Options WaveTrend Engine</h3>
+
+    <!-- START FORM -->
+    <form id="startForm">
+        <div class="row mb-3">
+            <div class="col">
+                <select name="index" class="form-select" required>
+                    <option value="NIFTY">NIFTY</option>
+                    <option value="BANKNIFTY">BANKNIFTY</option>
+                    <option value="SENSEX">SENSEX</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <select name="strike" class="form-select" id="strikeDropdown"></select>
+            </div>
+
+            <div class="col">
+                <select name="option_type" class="form-select">
+                    <option value="CE">CE</option>
+                    <option value="PE">PE</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <input type="date" name="expiry" class="form-control" required>
+            </div>
+        </div>
+
+        <button class="btn btn-success w-100">Start Engine</button>
+    </form>
+
+    <hr class="my-4">
+
+    <!-- ACTIVE ENGINES TABLE -->
+    <h5>Active Engines</h5>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Status</th>
+                <th>Total Alerts</th>
+                <th>Bull</th>
+                <th>Bear</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="engineTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+function populateStrikes(index) {
+    let dropdown = document.getElementById("strikeDropdown");
+    dropdown.innerHTML = "";
+
+    let start, end;
+
+    if(index === "NIFTY") {
+        start = 24000; end = 28000;
+    } else if(index === "BANKNIFTY") {
+        start = 60000; end = 62000;
+    } else {
+        start = 82000; end = 84000;
+    }
+
+    for(let i=start; i<=end; i+=50){
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.text = i;
+        dropdown.appendChild(opt);
+    }
+}
+
+populateStrikes("NIFTY");
+
+document.querySelector("select[name='index']")
+    .addEventListener("change", function(){
+        populateStrikes(this.value);
+    });
+
+// START ENGINE
+document.getElementById("startForm").onsubmit = async function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    await fetch("/start", {
+        method: "POST",
+        body: formData
+    });
+
+    loadEngines();
+};
+
+// LOAD ENGINE DATA
+async function loadEngines(){
+    let res = await fetch("/engines");
+    let data = await res.json();
+
+    let table = document.getElementById("engineTable");
+    table.innerHTML = "";
+
+    data.forEach(engine => {
+
+        table.innerHTML += `
+        <tr>
+            <td>${engine.symbol}</td>
+            <td>${engine.status}</td>
+            <td>${engine.total}</td>
+            <td class="text-success">${engine.bull}</td>
+            <td class="text-danger">${engine.bear}</td>
+            <td>
+                <button class="btn btn-warning btn-sm"
+                    onclick="pauseEngine('${engine.symbol}')">
+                    Pause
+                </button>
+
+                <button class="btn btn-danger btn-sm"
+                    onclick="deleteEngine('${engine.symbol}')">
+                    Delete
+                </button>
+            </td>
+        </tr>`;
+    });
+}
+
+// PAUSE
+async function pauseEngine(symbol){
+    await fetch(`/pause/${symbol}`, {method:"POST"});
+    loadEngines();
+}
+
+// DELETE
+async function deleteEngine(symbol){
+    await fetch(`/delete/${symbol}`, {method:"DELETE"});
+    loadEngines();
+}
+
+setInterval(loadEngines, 5000);
+loadEngines();
+</script>
+
+</body>
+</html>

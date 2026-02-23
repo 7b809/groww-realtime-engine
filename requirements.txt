@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pandas
+numpy
+pymongo
+requests
+pytz
+jinja2
+python-dotenv
+python-multipart
