@@ -4,9 +4,9 @@ def get_next_expiries(index):
     today = datetime.date.today()
 
     if index in ["NIFTY", "BANKNIFTY"]:
-        target_weekday = 1  # Tuesday (Mon=0)
+        target_weekday = 1
     elif index == "SENSEX":
-        target_weekday = 3  # Thursday
+        target_weekday = 3
     else:
         return []
 

@@ -1,24 +1,23 @@
-import os
-import requests
+# app/history_client.py
 
+import requests,os
 
-def fetch_historic_signals(index, year, month, strike, option_type):
+BASE_URL = os.environ.get("HISTORIC_DATA_URL")
 
-    base_url = os.getenv("HISTORIC_DATA_URL")
-
-    url = f"{base_url}/api/history"
+def fetch_historic_signals(index, year, month, expiry_day, strike, option_type):
+    url = f"{BASE_URL}/api/history"
 
     params = {
-        "index_name": index,
-        "year": year,
-        "month": month,
-        "strike": strike,
-        "option_type": option_type
-    }
+    "index_name": index,
+    "year": year,
+    "month": month,
+    "expiry_day": expiry_day,
+    "strike": strike,
+    "option_type": option_type
+}
+    r = requests.get(url, params=params, timeout=60)
 
-    response = requests.get(url, params=params, timeout=60)
+    if r.status_code != 200:
+        raise Exception("History API failed")
 
-    if response.status_code != 200:
-        raise Exception("Failed to fetch history API")
-
-    return response.json()
+    return r.json()

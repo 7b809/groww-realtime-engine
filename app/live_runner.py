@@ -1,101 +1,85 @@
-import time
-import datetime
-import pytz
+import time,os
+from datetime import datetime
+from app.registry import active_engines, engine_status
+from app.groww_client import fetch_candles, generate_today_window
+from app.database import symbol_col
 
-from app.groww_client import fetch_candles, generate_day_window
-from app.database import save_signal
-from app.engine_registry import active_engines, engine_status
+# ==========================
+# CONFIG FLAGS
+# ==========================
+PRINT_LOGS = os.getenv("PRINT_LOGS", "False").lower() == "True"  # 🔥 Turn logs ON/OFF here
+POLL_INTERVAL = 3       # seconds (instead of hardcoded 60)
+
+def log(message):
+    if PRINT_LOGS:
+        print(message)
 
 
-def start_live(symbol, engine):
+def start_live(symbol):
 
-    print(f"🚀 Live engine started for {symbol}")
+    engine = active_engines[symbol]
+    last_ts = None
 
-    last_processed_timestamp = None
-
-    ist = pytz.timezone("Asia/Kolkata")
+    log(f"[LIVE] Started engine for {symbol}")
 
     while True:
 
-        try:
-            # ==========================
-            # STOP IF ENGINE DELETED
-            # ==========================
-            if symbol not in active_engines:
-                print(f"🛑 Engine removed for {symbol}. Stopping live loop.")
-                break
+        if symbol not in active_engines:
+            log(f"[LIVE] Engine removed for {symbol}")
+            break
 
-            # ==========================
-            # PAUSE SUPPORT
-            # ==========================
-            if engine_status.get(symbol) == "paused":
-                time.sleep(5)
-                continue
-
-            # ==========================
-            # MARKET HOURS CHECK (9-16 IST)
-            # ==========================
-            now = datetime.datetime.now(ist)
-
-            if now.hour < 9 or now.hour >= 16:
-                time.sleep(30)
-                continue
-
-            # ==========================
-            # FETCH TODAY DATA
-            # ==========================
-            start_ms, end_ms = generate_day_window()
-
-            candles = None
-            attempts = 0
-
-            while attempts < 3:
-                try:
-                    candles = fetch_candles(symbol, 1, start_ms, end_ms)
-                    if candles:
-                        break
-                except Exception as e:
-                    print(f"⚠ Live fetch attempt {attempts+1} failed:", e)
-
-                attempts += 1
-                time.sleep(1)
-
-            if not candles:
-                time.sleep(30)
-                continue
-
-            latest = candles[-1]
-
-            # ==========================
-            # PREVENT DUPLICATE CANDLE PROCESSING
-            # ==========================
-            if last_processed_timestamp == latest[0]:
-                time.sleep(10)
-                continue
-
-            last_processed_timestamp = latest[0]
-
-            # ==========================
-            # UPDATE WAVETREND ENGINE
-            # ==========================
-            signal = engine.update(latest)
-
-            if signal:
-                save_signal({
-                    "symbol": symbol,
-                    "type": signal["type"],
-                    "count": signal["count"],
-                    "price": signal["price"],
-                    "timestamp": signal["timestamp"]
-                })
-
-                print(f"📢 New {signal['type']} signal for {symbol}")
-
-            # ==========================
-            # WAIT FOR NEXT MINUTE
-            # ==========================
-            time.sleep(60)
-
-        except Exception as e:
-            print(f"❌ Live engine error for {symbol}:", e)
+        if engine_status[symbol] == "paused":
+            log(f"[LIVE] Engine paused for {symbol}")
             time.sleep(5)
+            continue
+
+        start_ms, end_ms = generate_today_window()
+
+        log(f"[LIVE] Fetching candles for {symbol}")
+
+        candles = fetch_candles(symbol, 1, start_ms, end_ms)
+
+        if not candles:
+            log(f"[LIVE] No candles received")
+            time.sleep(POLL_INTERVAL)
+            continue
+
+        latest = candles[-1]
+
+        if last_ts == latest[0]:
+            log(f"[LIVE] No new candle")
+            time.sleep(POLL_INTERVAL)
+            continue
+
+        last_ts = latest[0]
+
+        log(
+            f"[LIVE] New Candle → "
+            f"Time: {datetime.fromtimestamp(latest[0])} | "
+            f"Close: {latest[4]}"
+        )
+
+        signal = engine.update(latest)
+
+        if signal:
+
+            log(
+                f"[SIGNAL] {signal['type'].upper()} "
+                f"#{signal['count']} @ {signal['price']}"
+            )
+
+            symbol_col.update_one(
+                {"symbol": symbol},
+                {
+                    "$set": {
+                        "signals.latest_signal": signal,
+                        "live.last_price": signal["price"],
+                        "live.last_timestamp": signal["timestamp"]
+                    },
+                    "$inc": {
+                        f"signals.{signal['type']}_count": 1
+                    }
+                }
+            )
+
+        time.sleep(POLL_INTERVAL)
