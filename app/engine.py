@@ -2,7 +2,6 @@ import pandas as pd
 
 class WaveTrendEngine:
 
-
     def __init__(self):
         self.df = pd.DataFrame(columns=[
             "timestamp",
@@ -14,6 +13,7 @@ class WaveTrendEngine:
         ])
         self.bull_count = 0
         self.bear_count = 0
+
     def load_history(self, candles):
 
         self.df = pd.DataFrame(
@@ -28,10 +28,10 @@ class WaveTrendEngine:
 
         df = self.df
 
-        ap = (df.high + df.low + df.close)/3
+        ap = (df.high + df.low + df.close) / 3
         esa = ap.ewm(span=10, adjust=False).mean()
         d = abs(ap - esa).ewm(span=10, adjust=False).mean()
-        ci = (ap - esa)/(0.015*d)
+        ci = (ap - esa) / (0.015 * d)
         tci = ci.ewm(span=21, adjust=False).mean()
 
         df["wt1"] = tci
@@ -41,7 +41,7 @@ class WaveTrendEngine:
 
         for i in range(1, len(self.df)):
 
-            prev = self.df.iloc[i-1]
+            prev = self.df.iloc[i - 1]
             curr = self.df.iloc[i]
 
             bull = curr.wt1 > curr.wt2 and prev.wt1 <= prev.wt2
@@ -54,7 +54,15 @@ class WaveTrendEngine:
 
     def update(self, new_candle):
 
-        self.df.loc[len(self.df)] = new_candle
+        # ✅ SAFE APPEND (fix for pandas __setitem__ crash)
+        new_row = pd.DataFrame(
+            [new_candle],
+            columns=["timestamp","open","high","low","close","volume"]
+        )
+
+        self.df = pd.concat([self.df, new_row], ignore_index=True)
+
+        # Recalculate (same as your original logic)
         self.calculate()
 
         if len(self.df) < 2:
@@ -68,10 +76,18 @@ class WaveTrendEngine:
 
         if bull:
             self.bull_count += 1
-            return {"type":"bullish","price":float(curr.close),"timestamp":int(curr.timestamp)}
+            return {
+                "type": "bullish",
+                "price": float(curr.close),
+                "timestamp": int(curr.timestamp)
+            }
 
         if bear:
             self.bear_count += 1
-            return {"type":"bearish","price":float(curr.close),"timestamp":int(curr.timestamp)}
+            return {
+                "type": "bearish",
+                "price": float(curr.close),
+                "timestamp": int(curr.timestamp)
+            }
 
         return None
