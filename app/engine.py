@@ -31,7 +31,12 @@ class WaveTrendEngine:
         ap = (df.high + df.low + df.close) / 3
         esa = ap.ewm(span=10, adjust=False).mean()
         d = abs(ap - esa).ewm(span=10, adjust=False).mean()
-        ci = (ap - esa) / (0.015 * d)
+
+        # ✅ ZERO DIVISION PROTECTION (no logic change)
+        denominator = 0.015 * d
+        denominator = denominator.replace(0, 1e-10)
+
+        ci = (ap - esa) / denominator
         tci = ci.ewm(span=21, adjust=False).mean()
 
         df["wt1"] = tci
