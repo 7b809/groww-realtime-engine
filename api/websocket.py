@@ -171,7 +171,7 @@ async def wavetrend_socket(websocket: WebSocket):
                 "🆕 New candle started at:",
                 latest_timestamp
             )
-
+ 
             session["candles"].append(latest)
             session["last_timestamp"] = latest_timestamp
             session["candles"] = session["candles"][-2000:]
