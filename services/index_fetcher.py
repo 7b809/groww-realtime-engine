@@ -105,4 +105,45 @@ async def fetch_index_data(
     all_candles = list(set(tuple(c) for c in all_candles))
     all_candles.sort(key=lambda x: x[0])
 
+
     return all_candles, len(batches), symbol, exchange
+
+
+async def fetch_latest_index_candle(index_name: str):
+
+    index_name = index_name.upper()
+
+    if index_name not in INDEX_CONFIG:
+        return None
+
+    exchange = INDEX_CONFIG[index_name]["exchange"]
+    symbol = INDEX_CONFIG[index_name]["symbol"]
+
+    from datetime import datetime, timedelta
+    import pytz
+    import httpx
+
+    ist = pytz.timezone("Asia/Kolkata")
+    now = datetime.now(ist)
+    past = now - timedelta(minutes=5)
+
+    start_ms = int(past.timestamp() * 1000)
+    end_ms = int(now.timestamp() * 1000)
+
+    url = (
+        f"https://groww.in/v1/api/charting_service/v2/chart/delayed/"
+        f"exchange/{exchange}/segment/CASH/{symbol}"
+        f"?endTimeInMillis={end_ms}"
+        f"&intervalInMinutes=1"
+        f"&startTimeInMillis={start_ms}"
+    )
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            candles = data.get("candles", [])
+            return candles[-1] if candles else None
+
+    return None

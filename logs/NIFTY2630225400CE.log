@@ -145,3 +145,148 @@
 2026-02-27 10:29:38,933 | INFO | 📈 Computed 589 historical signals
 2026-02-27 10:29:38,944 | INFO | ❌ WebSocket disconnected
 2026-02-27 10:29:38,944 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:29:52,164 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:29:53,202 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:29:57,089 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:29:57,099 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:29:57,100 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:29:57,113 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:03,141 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:05,201 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:30:08,855 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:30:08,863 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:30:08,863 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:30:16,163 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:23,090 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:30:27,400 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:30:27,414 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:30:27,414 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:30:32,430 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:34,265 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:36,496 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:30:40,117 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:30:40,125 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:30:40,126 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:30:56,290 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:30:58,167 | INFO | 🕒 Latest candle: (1772168400, 78.6, 79.7, 77.25, 77.4, 123008340)
+2026-02-27 10:30:58,167 | INFO | 🆕 New candle detected
+2026-02-27 10:30:59,978 | INFO | 🔁 Recalculated signals: 285
+2026-02-27 10:30:59,979 | INFO | 📤 Sending live_update: {'type': 'live_update', 'symbol': 'NIFTY2630225400CE', 'latest_candle': (1772168400, 78.6, 79.7, 77.25, 77.4, 123008340), 'signal': {'symbol': 'NIFTY2630225400CE', 'type': 'bullish', 'count': 143, 'date': '2026-02-27', 'time': '10:03', 'price': 81.35, 'trade_side': 'ENTRY'}}
+2026-02-27 10:30:59,979 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:30:59,980 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:31:00,080 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:01,241 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:02,164 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:31:06,326 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:31:06,338 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:31:06,338 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:31:11,377 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:12,409 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:31:16,305 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:31:16,313 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:31:16,313 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:31:25,461 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:26,245 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:31:28,636 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:31:28,652 | INFO | ✅ History sent to client
+2026-02-27 10:31:36,682 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:37,816 | INFO | 🕒 Latest candle: (1772168460, 77.8, 80.4, 77.8, 80.1, 123667960)
+2026-02-27 10:31:37,817 | INFO | 🆕 New candle detected
+2026-02-27 10:31:39,834 | INFO | 🔁 Recalculated signals: 285
+2026-02-27 10:31:39,835 | INFO | 📤 Sending live_update: {'type': 'live_update', 'symbol': 'NIFTY2630225400CE', 'latest_candle': (1772168460, 77.8, 80.4, 77.8, 80.1, 123667960), 'signal': {'symbol': 'NIFTY2630225400CE', 'type': 'bullish', 'count': 143, 'date': '2026-02-27', 'time': '10:03', 'price': 81.35, 'trade_side': 'ENTRY'}}
+2026-02-27 10:31:39,835 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:31:39,836 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:31:48,467 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:31:53,551 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:31:57,463 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:31:57,481 | INFO | ✅ History sent to client
+2026-02-27 10:32:01,475 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.15, 80.95, 81.15, 124294625)
+2026-02-27 10:32:01,476 | INFO | 🆕 New candle detected
+2026-02-27 10:32:03,296 | INFO | 🔁 Recalculated signals: 285
+2026-02-27 10:32:03,297 | INFO | 📤 Sending live_update: {'type': 'live_update', 'symbol': 'NIFTY2630225400CE', 'latest_candle': (1772168520, 80.95, 81.15, 80.95, 81.15, 124294625), 'signal': {'symbol': 'NIFTY2630225400CE', 'type': 'bullish', 'count': 143, 'date': '2026-02-27', 'time': '10:03', 'price': 81.35, 'trade_side': 'ENTRY'}}
+2026-02-27 10:32:06,903 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.2, 80.6, 81.0, 124396805)
+2026-02-27 10:32:06,903 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:09,868 | INFO | ⏳ No latest candle yet
+2026-02-27 10:32:13,359 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.45, 80.2, 80.45, 124588360)
+2026-02-27 10:32:13,360 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:16,939 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.45, 80.2, 80.85, 124643415)
+2026-02-27 10:32:16,940 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:20,631 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.45, 80.2, 81.4, 124684495)
+2026-02-27 10:32:20,632 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:24,520 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.45, 80.2, 81.45, 124758465)
+2026-02-27 10:32:24,520 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:28,366 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.8, 80.2, 81.3, 124833150)
+2026-02-27 10:32:28,367 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:32,720 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.8, 80.2, 81.3, 124916805)
+2026-02-27 10:32:32,721 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:36,807 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.8, 80.2, 81.35, 124989085)
+2026-02-27 10:32:36,808 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:40,699 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.8, 80.2, 81.45, 125054605)
+2026-02-27 10:32:40,699 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:44,795 | INFO | 🕒 Latest candle: (1772168520, 80.95, 81.8, 80.2, 81.8, 125114535)
+2026-02-27 10:32:44,796 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:48,793 | INFO | 🕒 Latest candle: (1772168520, 80.95, 82.4, 80.2, 82.05, 125423610)
+2026-02-27 10:32:48,794 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:52,727 | INFO | 🕒 Latest candle: (1772168520, 80.95, 82.4, 80.2, 82.4, 125571095)
+2026-02-27 10:32:52,728 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:32:56,575 | INFO | 🕒 Latest candle: (1772168520, 80.95, 82.55, 80.2, 82.05, 125646495)
+2026-02-27 10:32:56,576 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:00,420 | INFO | 🕒 Latest candle: (1772168520, 80.95, 83.0, 80.2, 83.0, 125824465)
+2026-02-27 10:33:00,420 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:06,045 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 82.35, 82.6, 126001720)
+2026-02-27 10:33:06,045 | INFO | 🆕 New candle detected
+2026-02-27 10:33:07,788 | INFO | 🔁 Recalculated signals: 283
+2026-02-27 10:33:07,789 | INFO | 📤 Sending live_update: {'type': 'live_update', 'symbol': 'NIFTY2630225400CE', 'latest_candle': (1772168580, 82.8, 82.8, 82.35, 82.6, 126001720), 'signal': {'symbol': 'NIFTY2630225400CE', 'type': 'bullish', 'count': 142, 'date': '2026-02-27', 'time': '10:03', 'price': 81.35, 'trade_side': 'ENTRY'}}
+2026-02-27 10:33:07,790 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:33:07,790 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:33:09,681 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:33:10,517 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:33:12,678 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:33:12,693 | INFO | ✅ History sent to client
+2026-02-27 10:33:18,068 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.45, 81.0, 126344335)
+2026-02-27 10:33:18,068 | INFO | 🆕 New candle detected
+2026-02-27 10:33:19,635 | INFO | 🔁 Recalculated signals: 285
+2026-02-27 10:33:19,636 | INFO | 📤 Sending live_update: {'type': 'live_update', 'symbol': 'NIFTY2630225400CE', 'latest_candle': (1772168580, 82.8, 82.8, 80.45, 81.0, 126344335), 'signal': {'symbol': 'NIFTY2630225400CE', 'type': 'bullish', 'count': 143, 'date': '2026-02-27', 'time': '10:03', 'price': 81.35, 'trade_side': 'ENTRY'}}
+2026-02-27 10:33:23,185 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.45, 80.8, 126433840)
+2026-02-27 10:33:23,185 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:26,167 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.45, 80.95, 126506445)
+2026-02-27 10:33:26,167 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:29,847 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.1, 80.1, 126617725)
+2026-02-27 10:33:29,847 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:33,532 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.0, 80.65, 126715485)
+2026-02-27 10:33:33,533 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:37,629 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 80.0, 81.0, 126777755)
+2026-02-27 10:33:37,630 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:39,048 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:33:42,118 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:33:43,934 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 79.2, 79.2, 126935380)
+2026-02-27 10:33:43,935 | INFO | ⛔ Same timestamp, skipping
+2026-02-27 10:33:44,040 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:33:47,735 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:33:47,741 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:33:47,742 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:33:53,864 | INFO | 🎯 Built symbol: NIFTY2630225400CE
+2026-02-27 10:33:59,954 | INFO | 🕒 Latest candle: (1772168580, 82.8, 82.8, 78.7, 79.6, 127253685)
+2026-02-27 10:33:59,954 | INFO | 🔥 Unexpected Error: 'NIFTY2630225400CE'
+2026-02-27 10:34:00,094 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:34:03,843 | INFO | 📈 Computed 589 historical signals
+2026-02-27 10:34:03,851 | INFO | ❌ WebSocket disconnected
+2026-02-27 10:34:03,851 | INFO | 🧹 Session cleared for: NIFTY2630225400CE
+2026-02-27 10:34:05,511 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:34:06,414 | INFO | 📊 Fetched 4039 candles
+2026-02-27 10:34:08,377 | INFO | ✅ History sent
+2026-02-27 10:34:32,803 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:34:36,840 | INFO | 📊 Fetched 4069 candles
+2026-02-27 10:34:40,372 | INFO | ✅ History sent
+2026-02-27 10:36:44,578 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:36:47,974 | INFO | 📊 Fetched 4069 candles
+2026-02-27 10:36:51,440 | INFO | ✅ History sent
+2026-02-27 10:39:05,150 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:39:06,602 | INFO | 📊 Fetched 4069 candles
+2026-02-27 10:39:07,702 | INFO | ✅ History sent
+2026-02-27 10:39:35,049 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:39:36,740 | INFO | 📊 Fetched 4069 candles
+2026-02-27 10:39:38,838 | INFO | ✅ History sent
+2026-02-27 10:39:52,167 | INFO | 🎯 Built option symbol: NIFTY2630225400CE
+2026-02-27 10:39:53,946 | INFO | 📊 Fetched 4069 candles
+2026-02-27 10:39:54,991 | INFO | ✅ History sent
