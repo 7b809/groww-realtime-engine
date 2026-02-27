@@ -156,10 +156,21 @@ async def wavetrend_socket(websocket: WebSocket):
 
             # 1️⃣ Candle not closed
             if latest_timestamp == session["last_timestamp"]:
-                log(logger, "⏳ Candle not closed yet – ignored")
+                log(logger, "⏳ Candle still forming – not closed yet | TS:", latest_timestamp)
                 continue
 
-            log(logger, "🆕 New candle detected:", latest_timestamp)
+            # 🕯 Previous candle closed
+            log(
+                logger,
+                "🕯 Candle CLOSED at:",
+                session["last_timestamp"]
+            )
+
+            log(
+                logger,
+                "🆕 New candle started at:",
+                latest_timestamp
+            )
 
             session["candles"].append(latest)
             session["last_timestamp"] = latest_timestamp
