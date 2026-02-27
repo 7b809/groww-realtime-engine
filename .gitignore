@@ -1,4 +1,4 @@
 .env
 temp
 __pycache__
-logs
+logs 
