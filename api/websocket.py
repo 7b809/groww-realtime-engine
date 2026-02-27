@@ -3,26 +3,34 @@ import asyncio
 import logging
 import os
 import sys
+import json,time
 
 from services.symbol_service import build_symbol
-from services.groww_fetcher import fetch_last_30_days, fetch_latest_candle
-from services.index_fetcher import fetch_index_data, fetch_latest_index_candle
+from services.groww_fetcher import fetch_last_30_days
+from services.index_fetcher import fetch_index_data
 from wavetrend_processor import process_wavetrend
+from services.live_feed_manager import LiveFeedManager
+from dhanhq import marketfeed
 
 # 🔥 Ensure Windows console supports UTF-8
 sys.stdout.reconfigure(encoding="utf-8")
 
 PRINT_LOGS = True
 
-# ==============================
-# LOGGING SETUP
-# ==============================
-
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
 symbol_loggers = {}
 active_sessions = {}
+
+# 🔥 Load Dhan token once
+with open("dhan_token.json", "r") as f:
+    dhan_token = json.load(f)
+
+live_manager = LiveFeedManager(
+    dhan_token["dhanClientId"],
+    dhan_token["accessToken"]
+)
 
 
 def get_symbol_logger(symbol: str):
@@ -92,6 +100,19 @@ async def wavetrend_socket(websocket: WebSocket):
 
             candles, _ = await fetch_last_30_days(symbol, exchange)
 
+            # 🔥 Require security_id from frontend
+            security_id = config.get("security_id")
+
+            instruments = [
+                (marketfeed.NSE_FNO, str(security_id), marketfeed.Full)
+            ]
+
+            if mode == "option":
+                live_manager.subscribe(marketfeed.NSE_FNO, security_id)
+            else:
+                live_manager.subscribe(marketfeed.NSE, security_id)
+                
+    
         # =========================================
         # INDEX MODE
         # =========================================
@@ -104,12 +125,21 @@ async def wavetrend_socket(websocket: WebSocket):
             logger = get_symbol_logger(symbol)
             log(logger, "🎯 Built index symbol:", symbol)
 
+            security_id = config.get("security_id")
+
+            instruments = [
+                (marketfeed.NSE, str(security_id), marketfeed.Full)
+            ]
+
+            # live_manager.start(instruments)
+            # live_manager.register_symbol(security_id)
+
         else:
             await websocket.send_json({"error": "Invalid mode"})
             return
 
         # =========================================
-        # PROCESS HISTORY
+        # PROCESS HISTORY (UNCHANGED)
         # =========================================
         log(logger, f"📊 Fetched {len(candles)} candles")
 
@@ -136,44 +166,31 @@ async def wavetrend_socket(websocket: WebSocket):
         log(logger, "✅ History sent")
 
         # =========================================
-        # LIVE LOOP
+        # 🔥 NEW LIVE LOOP (Dhan Realtime)
         # =========================================
         while True:
 
-            await asyncio.sleep(30)
+            await asyncio.sleep(1)
 
-            if mode == "option":
-                latest = await fetch_latest_candle(symbol, exchange)
-            else:
-                latest = await fetch_latest_index_candle(config["index_name"])
+            sec_id, closed_candle = live_manager.process_tick()
 
-            if not latest:
-                log(logger, "⚠ No latest candle fetched")
+            if not closed_candle:
                 continue
 
-            latest_timestamp = latest[0]
+            log(logger, "🕯 Live candle closed:", closed_candle)
+
             session = active_sessions[symbol]
 
-            # 1️⃣ Candle not closed
-            if latest_timestamp == session["last_timestamp"]:
-                log(logger, "⏳ Candle still forming – not closed yet | TS:", latest_timestamp)
-                continue
+            # Convert to existing candle format
+            session["candles"].append([
+                int(time.time() * 1000),
+                closed_candle["open"],
+                closed_candle["high"],
+                closed_candle["low"],
+                closed_candle["close"],
+                closed_candle["volume"]
+            ])
 
-            # 🕯 Previous candle closed
-            log(
-                logger,
-                "🕯 Candle CLOSED at:",
-                session["last_timestamp"]
-            )
-
-            log(
-                logger,
-                "🆕 New candle started at:",
-                latest_timestamp
-            )
- 
-            session["candles"].append(latest)
-            session["last_timestamp"] = latest_timestamp
             session["candles"] = session["candles"][-2000:]
 
             new_signals = process_wavetrend(
@@ -183,26 +200,14 @@ async def wavetrend_socket(websocket: WebSocket):
                 target=target
             )
 
-            # 2️⃣ No signals at all
             if not new_signals:
-                log(logger, "📉 No WaveTrend signals generated – ignored")
                 continue
 
             latest_signal = new_signals[-1]
 
-            # 3️⃣ Signal count unchanged
             if latest_signal["count"] == last_sent_count:
-                log(
-                    logger,
-                    "🔁 No new signal. Direction:",
-                    latest_signal["type"],
-                    "| Count:",
-                    latest_signal["count"],
-                    "– ignored"
-                )
                 continue
 
-            # 4️⃣ New signal
             last_sent_count = latest_signal["count"]
 
             log(
@@ -213,14 +218,19 @@ async def wavetrend_socket(websocket: WebSocket):
                 latest_signal["count"]
             )
 
-            res_obj = {
+            await websocket.send_json({
                 "type": "live_update",
                 "symbol": symbol,
-                "latest_candle": latest,
-                "signal": latest_signal
-            }
-
-            await websocket.send_json(res_obj)
+                "signal": latest_signal,
+                "latest_candle": [
+                    int(time.time()),   # seconds
+                    closed_candle["open"],
+                    closed_candle["high"],
+                    closed_candle["low"],
+                    closed_candle["close"],
+                    closed_candle["volume"]
+                ]
+            })            
 
     except WebSocketDisconnect:
 
@@ -228,14 +238,6 @@ async def wavetrend_socket(websocket: WebSocket):
 
         if 'symbol' in locals() and symbol in active_sessions:
             del active_sessions[symbol]
-
-        if 'symbol' in locals() and symbol in symbol_loggers:
-            logger_obj = symbol_loggers[symbol]
-            handlers = logger_obj.handlers[:]
-            for handler in handlers:
-                handler.close()
-                logger_obj.removeHandler(handler)
-            del symbol_loggers[symbol]
 
     except Exception as e:
         log(temp_logger, "🔥 Unexpected Error:", str(e))
