@@ -1,8 +1,8 @@
 fastapi
 uvicorn
-pymongo
-python-dotenv
 requests
 pandas
 numpy
 pytz
+jinja2
+httpx

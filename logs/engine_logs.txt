@@ -1,0 +1,126 @@
+[2026-02-27 10:11:31] 🔌 WebSocket accepted
+[2026-02-27 10:11:31] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:31] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:32] 🔌 WebSocket accepted
+[2026-02-27 10:11:32] 🔌 WebSocket accepted
+[2026-02-27 10:11:32] ❌ WebSocket disconnected
+[2026-02-27 10:11:32] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:32] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:32] 🔌 WebSocket accepted
+[2026-02-27 10:11:32] ❌ WebSocket disconnected
+[2026-02-27 10:11:32] 🔌 WebSocket accepted
+[2026-02-27 10:11:32] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:32] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:33] 🔌 WebSocket accepted
+[2026-02-27 10:11:33] 🔌 WebSocket accepted
+[2026-02-27 10:11:33] ❌ WebSocket disconnected
+[2026-02-27 10:11:33] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:33] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:33] 🔌 WebSocket accepted
+[2026-02-27 10:11:33] 🔌 WebSocket accepted
+[2026-02-27 10:11:33] ❌ WebSocket disconnected
+[2026-02-27 10:11:33] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:33] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:34] 🔌 WebSocket accepted
+[2026-02-27 10:11:34] ❌ WebSocket disconnected
+[2026-02-27 10:11:34] 🔌 WebSocket accepted
+[2026-02-27 10:11:34] 📊 Fetched 4039 candles
+[2026-02-27 10:11:35] 📈 Computed 589 historical signals
+[2026-02-27 10:11:35] ❌ WebSocket disconnected
+[2026-02-27 10:11:35] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:11:35] 📊 Fetched 4039 candles
+[2026-02-27 10:11:37] 📈 Computed 589 historical signals
+[2026-02-27 10:11:37] ❌ WebSocket disconnected
+[2026-02-27 10:11:37] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:11:37] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:37] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:37] 🔌 WebSocket accepted
+[2026-02-27 10:11:37] 🔌 WebSocket accepted
+[2026-02-27 10:11:37] 🔌 WebSocket accepted
+[2026-02-27 10:11:37] ❌ WebSocket disconnected
+[2026-02-27 10:11:37] ❌ WebSocket disconnected
+[2026-02-27 10:11:37] ❌ WebSocket disconnected
+[2026-02-27 10:11:37] 🔌 WebSocket accepted
+[2026-02-27 10:11:37] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:37] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:11:38] 📊 Fetched 4039 candles
+[2026-02-27 10:11:39] 📈 Computed 589 historical signals
+[2026-02-27 10:11:39] ❌ WebSocket disconnected
+[2026-02-27 10:11:39] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:11:39] 🔌 WebSocket accepted
+[2026-02-27 10:11:39] 🔌 WebSocket accepted
+[2026-02-27 10:11:39] ❌ WebSocket disconnected
+[2026-02-27 10:11:39] ❌ WebSocket disconnected
+[2026-02-27 10:11:39] 📊 Fetched 4039 candles
+[2026-02-27 10:11:41] 📈 Computed 589 historical signals
+[2026-02-27 10:11:41] ❌ WebSocket disconnected
+[2026-02-27 10:11:41] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:11:41] 🔌 WebSocket accepted
+[2026-02-27 10:11:41] ❌ WebSocket disconnected
+[2026-02-27 10:11:41] 🔌 WebSocket accepted
+[2026-02-27 10:11:41] 📊 Fetched 4039 candles
+[2026-02-27 10:11:42] 📈 Computed 589 historical signals
+[2026-02-27 10:11:42] ❌ WebSocket disconnected
+[2026-02-27 10:11:42] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:11:42] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:11:42] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:35] 🔌 WebSocket accepted
+[2026-02-27 10:13:35] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:35] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:36] 🔌 WebSocket accepted
+[2026-02-27 10:13:36] 🔌 WebSocket accepted
+[2026-02-27 10:13:36] ❌ WebSocket disconnected
+[2026-02-27 10:13:36] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:36] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:37] 🔌 WebSocket accepted
+[2026-02-27 10:13:37] 🔌 WebSocket accepted
+[2026-02-27 10:13:37] ❌ WebSocket disconnected
+[2026-02-27 10:13:37] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:37] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:38] 🔌 WebSocket accepted
+[2026-02-27 10:13:38] 🔌 WebSocket accepted
+[2026-02-27 10:13:38] ❌ WebSocket disconnected
+[2026-02-27 10:13:38] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:38] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:39] 🔌 WebSocket accepted
+[2026-02-27 10:13:39] ❌ WebSocket disconnected
+[2026-02-27 10:13:39] 🔌 WebSocket accepted
+[2026-02-27 10:13:39] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:39] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:40] 🔌 WebSocket accepted
+[2026-02-27 10:13:40] 🔌 WebSocket accepted
+[2026-02-27 10:13:40] ❌ WebSocket disconnected
+[2026-02-27 10:13:40] 📊 Fetched 4039 candles
+[2026-02-27 10:13:41] 📈 Computed 589 historical signals
+[2026-02-27 10:13:41] ❌ WebSocket disconnected
+[2026-02-27 10:13:41] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:13:41] 📊 Fetched 4039 candles
+[2026-02-27 10:13:42] 📈 Computed 589 historical signals
+[2026-02-27 10:13:42] ❌ WebSocket disconnected
+[2026-02-27 10:13:42] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:13:42] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:42] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:43] 🔌 WebSocket accepted
+[2026-02-27 10:13:43] 🔌 WebSocket accepted
+[2026-02-27 10:13:43] 🔌 WebSocket accepted
+[2026-02-27 10:13:43] ❌ WebSocket disconnected
+[2026-02-27 10:13:43] ❌ WebSocket disconnected
+[2026-02-27 10:13:43] ❌ WebSocket disconnected
+[2026-02-27 10:13:43] 🔌 WebSocket accepted
+[2026-02-27 10:13:43] 📊 Fetched 4039 candles
+[2026-02-27 10:13:44] 📈 Computed 589 historical signals
+[2026-02-27 10:13:44] ❌ WebSocket disconnected
+[2026-02-27 10:13:44] 🧹 Session cleared for: NIFTY2630225400CE
+[2026-02-27 10:13:44] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:13:44] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:13:44] 🔌 WebSocket accepted
+[2026-02-27 10:13:44] 🔌 WebSocket accepted
+[2026-02-27 10:13:44] ❌ WebSocket disconnected
+[2026-02-27 10:13:44] ❌ WebSocket disconnected
+[2026-02-27 10:17:33] 🔌 WebSocket accepted
+[2026-02-27 10:17:33] 📥 Received config: {'index_name': 'NIFTY', 'year': '26', 'month': 'MAR', 'expiry_day': '02', 'strike': '25400', 'option_type': 'CE', 'target': 3}
+[2026-02-27 10:17:33] 🎯 Built symbol: NIFTY2630225400CE
+[2026-02-27 10:17:34] 📊 Fetched 4039 candles
+[2026-02-27 10:17:38] 📈 Computed 589 historical signals
+[2026-02-27 10:17:38] ❌ WebSocket disconnected
+[2026-02-27 10:17:38] 🧹 Session cleared for: NIFTY2630225400CE
