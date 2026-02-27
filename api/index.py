@@ -411,4 +411,4 @@ async def get_live_signal(
 
 @app.websocket("/ws/wavetrend")
 async def websocket_endpoint(websocket: WebSocket):
-    await wavetrend_socket(websocket)    
+    await wavetrend_socket(websocket)     
