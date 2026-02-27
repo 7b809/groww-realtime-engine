@@ -10,6 +10,11 @@ from services.trade_matcher import match_confirmed_trades
 from wavetrend_processor import process_wavetrend
 from services.groww_fetcher import fetch_last_24hrs, fetch_latest_candle
 from api.websocket import wavetrend_socket
+from fastapi.responses import FileResponse
+from pathlib import Path
+import os
+
+
 last_processed_candle = {}
 
 app = FastAPI(
@@ -26,7 +31,47 @@ async def root():
     return {
         "status": "WaveTrend API Running (Optimized + Modular)"
     }
+@app.get("/api/logs")
+async def list_logs():
+    log_dir = Path("logs")
 
+    if not log_dir.exists():
+        return {"logs": []}
+
+    files = [
+        f.name for f in log_dir.iterdir()
+        if f.is_file() and f.suffix == ".log"
+    ]
+
+    return {
+        "total_logs": len(files),
+        "logs": files
+    }
+    
+@app.get("/api/logs/download/{filename}")
+async def download_log(filename: str):
+
+    # 🔐 Basic security: prevent path traversal
+    if ".." in filename or "/" in filename:
+        return JSONResponse(
+            {"error": "Invalid filename"},
+            status_code=400
+        )
+
+    file_path = Path("logs") / filename
+
+    if not file_path.exists():
+        return JSONResponse(
+            {"error": "Log file not found"},
+            status_code=404
+        )
+
+    return FileResponse(
+        path=file_path,
+        filename=filename,
+        media_type="text/plain"
+    )    
+    
 
 # ==========================
 # HISTORY API
