@@ -12,7 +12,7 @@ from wavetrend_processor import process_wavetrend
 # 🔥 Ensure Windows console supports UTF-8
 sys.stdout.reconfigure(encoding="utf-8")
 
-PRINT_LOGS = True
+PRINT_LOGS = False
 
 # ==============================
 # LOGGING SETUP
