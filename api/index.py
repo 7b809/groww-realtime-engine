@@ -3,6 +3,8 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request
+from fastapi.templating import Jinja2Templates
 
 from services.symbol_service import build_symbol
 from services.groww_fetcher import fetch_last_30_days
@@ -32,14 +34,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+templates = Jinja2Templates(directory="templates")
 # ==========================
 # ROOT
 # ==========================
-@app.get("/")
+@app.get("/health")
 async def root():
     return {
         "status": "WaveTrend API Running (Optimized + Modular)"
     }
+@app.get("/")
+async def dashboard(request: Request):
+    return templates.TemplateResponse(
+        "live_dashboard.html",
+        {"request": request}
+    )  
+    
+      
 @app.get("/api/logs")
 async def list_logs():
     log_dir = Path("logs")

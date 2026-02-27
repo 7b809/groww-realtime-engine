@@ -12,7 +12,7 @@ from wavetrend_processor import process_wavetrend
 # 🔥 Ensure Windows console supports UTF-8
 sys.stdout.reconfigure(encoding="utf-8")
 
-PRINT_LOGS = False
+PRINT_LOGS = True
 
 # ==============================
 # LOGGING SETUP
@@ -73,7 +73,7 @@ async def wavetrend_socket(websocket: WebSocket):
         target = config.get("target")
 
         # =========================================
-        # OPTION MODE (UNCHANGED LOGIC)
+        # OPTION MODE
         # =========================================
         if mode == "option":
 
@@ -93,7 +93,7 @@ async def wavetrend_socket(websocket: WebSocket):
             candles, _ = await fetch_last_30_days(symbol, exchange)
 
         # =========================================
-        # INDEX MODE (NEW)
+        # INDEX MODE
         # =========================================
         elif mode == "index":
 
@@ -131,6 +131,7 @@ async def wavetrend_socket(websocket: WebSocket):
             "total_signals": len(signals),
             "signals": signals
         })
+
         last_sent_count = signals[-1]["count"] if signals else None
         log(logger, "✅ History sent")
 
@@ -139,7 +140,7 @@ async def wavetrend_socket(websocket: WebSocket):
         # =========================================
         while True:
 
-            await asyncio.sleep(2)
+            await asyncio.sleep(30)
 
             if mode == "option":
                 latest = await fetch_latest_candle(symbol, exchange)
@@ -147,13 +148,18 @@ async def wavetrend_socket(websocket: WebSocket):
                 latest = await fetch_latest_index_candle(config["index_name"])
 
             if not latest:
+                log(logger, "⚠ No latest candle fetched")
                 continue
 
             latest_timestamp = latest[0]
             session = active_sessions[symbol]
 
+            # 1️⃣ Candle not closed
             if latest_timestamp == session["last_timestamp"]:
+                log(logger, "⏳ Candle not closed yet – ignored")
                 continue
+
+            log(logger, "🆕 New candle detected:", latest_timestamp)
 
             session["candles"].append(latest)
             session["last_timestamp"] = latest_timestamp
@@ -166,16 +172,35 @@ async def wavetrend_socket(websocket: WebSocket):
                 target=target
             )
 
+            # 2️⃣ No signals at all
             if not new_signals:
+                log(logger, "📉 No WaveTrend signals generated – ignored")
                 continue
 
             latest_signal = new_signals[-1]
 
-            # 🚀 SEND ONLY IF NEW COUNT
+            # 3️⃣ Signal count unchanged
             if latest_signal["count"] == last_sent_count:
+                log(
+                    logger,
+                    "🔁 No new signal. Direction:",
+                    latest_signal["type"],
+                    "| Count:",
+                    latest_signal["count"],
+                    "– ignored"
+                )
                 continue
 
+            # 4️⃣ New signal
             last_sent_count = latest_signal["count"]
+
+            log(
+                logger,
+                "🚀 NEW SIGNAL:",
+                latest_signal["type"],
+                "| Count:",
+                latest_signal["count"]
+            )
 
             res_obj = {
                 "type": "live_update",
@@ -185,8 +210,6 @@ async def wavetrend_socket(websocket: WebSocket):
             }
 
             await websocket.send_json(res_obj)
-
-
 
     except WebSocketDisconnect:
 

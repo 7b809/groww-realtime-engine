@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WaveTrend Multi Symbol Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: #eee;
+            padding: 20px;
+        }
+
+        .symbol-panel {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 6px;
+            border: 1px solid #333;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        th {
+            background: #222;
+            position: sticky;
+            top: 0;
+        }
+
+        .bullish {
+            background: #063;
+            color: #0f0;
+            font-weight: bold;
+        }
+
+        .bearish {
+            background: #600;
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+
+        .live-box {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .candle-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #222;
+            font-size: 13px;
+        }
+
+        .green-candle { border-left: 4px solid #00ff88; }
+        .red-candle { border-left: 4px solid #ff4d4d; }
+
+        .connected { background: #063; }
+        .disconnected { background: #600; }
+    </style>
+</head>
+<body>
+
+<h2>WaveTrend Multi Symbol Dashboard</h2>
+
+<div id="dashboard"></div>
+
+<script>
+
+const symbolConfigs = [
+    {
+        mode: "option",
+        index_name: "NIFTY",
+        year: "26",
+        month: "MAR",
+        expiry_day: "02",
+        strike: "25400",
+        option_type: "CE",
+        target: 3
+    },
+    {
+        mode: "option",
+        index_name: "NIFTY",
+        year: "26",
+        month: "MAR",
+        expiry_day: "02",
+        strike: "25400",
+        option_type: "PE",
+        target: 3
+    },
+    {
+        mode: "index",
+        index_name: "NIFTY",
+        target: 10
+    }
+];
+
+const dashboard = document.getElementById("dashboard");
+const sockets = {};
+
+symbolConfigs.forEach((config, index) => {
+    createSymbolPanel(config, index);
+    startSocket(index, config);   // ✅ pass config properly
+});
+
+function createSymbolPanel(config, index) {
+
+    const panel = document.createElement("div");
+    panel.className = "symbol-panel";
+
+    let title = "";
+
+    if (config.mode === "index") {
+        title = `${config.index_name} INDEX`;
+    } else {
+        title = `${config.index_name} 
+                 ${config.strike}${config.option_type} 
+                 (${config.expiry_day}-${config.month}-${config.year})`;
+    }
+
+    panel.innerHTML = `
+        <h3>${title}</h3>
+
+        <button id="btn-${index}" onclick="toggleSocket(${index})">
+            Stop
+        </button>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Side</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-${index}"></tbody>
+            </table>
+        </div>
+
+        <div id="live-${index}" class="live-box">
+            Waiting for signal...
+        </div>
+
+        <div id="candle-${index}" class="candle-box">
+            Waiting for candle...
+        </div>
+    `;
+
+    dashboard.appendChild(panel);
+}
+
+function startSocket(index, config) {
+
+    // ✅ use host (includes port)
+    const url = `ws://${window.location.host}/ws/wavetrend`;
+
+    const socket = new WebSocket(url);
+    sockets[index] = socket;
+
+    socket.onopen = function() {
+        socket.send(JSON.stringify(config));
+        document.getElementById(`btn-${index}`).className = "connected";
+    };
+
+    socket.onmessage = function(event) {
+
+        const data = JSON.parse(event.data);
+
+        if (data.type === "history") {
+            populateHistory(index, data.signals);
+        }
+
+        if (data.type === "live_update") {
+            addToTable(index, data.signal);
+            updateLiveBox(index, data.signal);
+            updateLiveCandle(index, data.latest_candle);
+        }
+    };
+
+    socket.onclose = function() {
+        document.getElementById(`live-${index}`).innerHTML =
+            "Connection Closed";
+        document.getElementById(`btn-${index}`).className = "disconnected";
+    };
+}
+
+function stopSocket(index) {
+    if (sockets[index]) {
+        sockets[index].close();
+        delete sockets[index];
+    }
+}
+
+function toggleSocket(index) {
+
+    if (sockets[index]) {
+        stopSocket(index);
+        document.getElementById(`btn-${index}`).innerText = "Start";
+    } else {
+        startSocket(index, symbolConfigs[index]);
+        document.getElementById(`btn-${index}`).innerText = "Stop";
+    }
+}
+
+function populateHistory(index, signals) {
+    signals.forEach(sig => addToTable(index, sig));
+}
+
+function addToTable(index, sig) {
+
+    const tbody = document.getElementById(`tbody-${index}`);
+    const row = document.createElement("tr");
+    row.className = sig.type;
+
+    row.innerHTML = `
+        <td>${sig.count}</td>
+        <td>${sig.date}</td>
+        <td>${sig.time}</td>
+        <td>${sig.type}</td>
+        <td>${sig.price}</td>
+        <td>${sig.trade_side}</td>
+    `;
+
+    tbody.appendChild(row);
+
+    const container = tbody.closest(".table-container");
+    container.scrollTop = container.scrollHeight;
+}
+
+function updateLiveBox(index, sig) {
+
+    const box = document.getElementById(`live-${index}`);
+    box.className = "live-box " + sig.type;
+
+    box.innerHTML = `
+        <b>${sig.type.toUpperCase()}</b><br>
+        Time: ${sig.time}<br>
+        Price: ${sig.price}<br>
+        Side: ${sig.trade_side}
+    `;
+}
+
+function updateLiveCandle(index, candle) {
+
+    if (!candle) return;
+
+    const [timestamp, open, high, low, close, volume] = candle;
+    const date = new Date(timestamp * 1000);
+    const box = document.getElementById(`candle-${index}`);
+
+    box.className = "candle-box";
+
+    if (close > open) box.classList.add("green-candle");
+    else box.classList.add("red-candle");
+
+    box.innerHTML = `
+        <b>Live Candle</b><br>
+        Time: ${date.toLocaleTimeString()}<br>
+        O: ${open} |
+        H: ${high} |
+        L: ${low} |
+        C: ${close}<br>
+        Vol: ${volume}
+    `;
+}
+
+</script>
+
+</body>
+</html>
