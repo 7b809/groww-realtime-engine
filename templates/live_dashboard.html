@@ -16,6 +16,11 @@
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 30px;
+            transition: 0.3s;
+        }
+
+        .panel-active {
+            box-shadow: 0 0 15px #00ff88;
         }
 
         button {
@@ -82,6 +87,35 @@
 
         .connected { background: #063; }
         .disconnected { background: #600; }
+
+        /* NEW LIVE INDICATOR */
+        .live-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+            background: #600;
+        }
+
+        .live-active {
+            background: #00aa44;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .last-update {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #aaa;
+        }
+
     </style>
 </head>
 <body>
@@ -125,13 +159,14 @@ const sockets = {};
 
 symbolConfigs.forEach((config, index) => {
     createSymbolPanel(config, index);
-    startSocket(index, config);   // ✅ pass config properly
+    startSocket(index, config);
 });
 
 function createSymbolPanel(config, index) {
 
     const panel = document.createElement("div");
     panel.className = "symbol-panel";
+    panel.id = `panel-${index}`;
 
     let title = "";
 
@@ -144,7 +179,12 @@ function createSymbolPanel(config, index) {
     }
 
     panel.innerHTML = `
-        <h3>${title}</h3>
+        <h3>
+            ${title}
+            <span id="live-indicator-${index}" class="live-indicator">
+                OFFLINE
+            </span>
+        </h3>
 
         <button id="btn-${index}" onclick="toggleSocket(${index})">
             Stop
@@ -170,6 +210,10 @@ function createSymbolPanel(config, index) {
             Waiting for signal...
         </div>
 
+        <div id="last-update-${index}" class="last-update">
+            No updates yet
+        </div>
+
         <div id="candle-${index}" class="candle-box">
             Waiting for candle...
         </div>
@@ -180,7 +224,6 @@ function createSymbolPanel(config, index) {
 
 function startSocket(index, config) {
 
-    // ✅ use host (includes port)
     const url = `ws://${window.location.host}/ws/wavetrend`;
 
     const socket = new WebSocket(url);
@@ -189,11 +232,25 @@ function startSocket(index, config) {
     socket.onopen = function() {
         socket.send(JSON.stringify(config));
         document.getElementById(`btn-${index}`).className = "connected";
+
+        const indicator = document.getElementById(`live-indicator-${index}`);
+        indicator.classList.add("live-active");
+        indicator.innerText = "LIVE";
     };
 
     socket.onmessage = function(event) {
 
         const data = JSON.parse(event.data);
+
+        // Glow panel on activity
+        const panel = document.getElementById(`panel-${index}`);
+        panel.classList.add("panel-active");
+        setTimeout(() => {
+            panel.classList.remove("panel-active");
+        }, 500);
+
+        document.getElementById(`last-update-${index}`)
+            .innerText = "Last update: " + new Date().toLocaleTimeString();
 
         if (data.type === "history") {
             populateHistory(index, data.signals);
@@ -210,6 +267,10 @@ function startSocket(index, config) {
         document.getElementById(`live-${index}`).innerHTML =
             "Connection Closed";
         document.getElementById(`btn-${index}`).className = "disconnected";
+
+        const indicator = document.getElementById(`live-indicator-${index}`);
+        indicator.classList.remove("live-active");
+        indicator.innerText = "OFFLINE";
     };
 }
 
