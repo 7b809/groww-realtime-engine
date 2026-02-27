@@ -131,7 +131,7 @@ async def wavetrend_socket(websocket: WebSocket):
             "total_signals": len(signals),
             "signals": signals
         })
-
+        last_sent_count = signals[-1]["count"] if signals else None
         log(logger, "✅ History sent")
 
         # =========================================
@@ -169,14 +169,24 @@ async def wavetrend_socket(websocket: WebSocket):
             if not new_signals:
                 continue
 
+            latest_signal = new_signals[-1]
+
+            # 🚀 SEND ONLY IF NEW COUNT
+            if latest_signal["count"] == last_sent_count:
+                continue
+
+            last_sent_count = latest_signal["count"]
+
             res_obj = {
                 "type": "live_update",
                 "symbol": symbol,
                 "latest_candle": latest,
-                "signal": new_signals[-1]
+                "signal": latest_signal
             }
 
             await websocket.send_json(res_obj)
+
+
 
     except WebSocketDisconnect:
 
