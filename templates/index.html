@@ -11,24 +11,31 @@
     <h2 class="text-center mb-4">📊 Dummy Trading Dashboard</h2>
 
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-success text-white p-3">
                 <h5>Capital</h5>
                 <h3>₹{{ capital }}</h3>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-primary text-white p-3">
-                <h5>Current Position</h5>
+                <h5>Position</h5>
                 <h3>{{ position if position else "None" }}</h3>
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card bg-warning text-dark p-3">
                 <h5>Entry Price</h5>
                 <h3>{{ entry if entry else "-" }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-dark p-3">
+                <h5>Strike</h5>
+                <h3>{{ strike if strike else "-" }}</h3>
             </div>
         </div>
     </div>
@@ -39,6 +46,7 @@
         <thead>
             <tr>
                 <th>Type</th>
+                <th>Strike</th>
                 <th>Entry</th>
                 <th>Exit</th>
                 <th>PnL</th>
@@ -49,6 +57,7 @@
             {% for t in trades %}
             <tr>
                 <td>{{ t.type }}</td>
+                <td>{{ t.strike }}</td>
                 <td>{{ t.entry }}</td>
                 <td>{{ t.exit }}</td>
                 <td class="{{ 'text-success' if t.pnl >= 0 else 'text-danger' }}">

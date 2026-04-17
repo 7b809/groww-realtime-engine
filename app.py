@@ -4,6 +4,10 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
+# ✅ IMPORT OPTION CHAIN FETCHER
+from main import fetch_option_chain
+
+
 # -------------------------------
 # LOAD ENV
 # -------------------------------
@@ -24,20 +28,45 @@ app = Flask(__name__)
 capital = 10000
 current_position = None
 entry_price = None
+current_strike = None   # ✅ NEW (safe add)
 trades = []
 
+# -------------------------------
+# STRIKE LOGIC
+# -------------------------------
+def get_strike(price, signal_type):
+    base = int(price // 50) * 50
+
+    if signal_type == "buyCE":
+        return base
+    elif signal_type == "buyPE":
+        return base + 50
+
+    return base
+
+
+# -------------------------------
+# GET OPTION PRICE FROM DATA
+# -------------------------------
+def get_option_price(data, strike, signal_type):
+    for s in data["strikes"]:
+        if s["strike"] == strike:
+            return s["ce_price"] if signal_type == "buyCE" else s["pe_price"]
+    return None
+
+
+# -------------------------------
+# PARSE ALERT
 # -------------------------------
 def parse_alert(msg):
     data = {}
 
     try:
-        # Split first word (signal name)
         parts = msg.split(" ", 1)
         data["Signal"] = parts[0]
 
         rest = parts[1]
 
-        # Extract fields safely
         import re
 
         time_match = re.search(r"Time=([0-9\-: ]+)", rest)
@@ -60,8 +89,10 @@ def parse_alert(msg):
 
 
 # -------------------------------
-def execute_trade(signal_type, price):
-    global capital, current_position, entry_price, trades
+# EXECUTE TRADE (UNCHANGED LOGIC)
+# -------------------------------
+def execute_trade(signal_type, price, strike=None):
+    global capital, current_position, entry_price, current_strike, trades
 
     action_log = ""
     new_position = "CE" if signal_type == "buyCE" else "PE"
@@ -70,6 +101,7 @@ def execute_trade(signal_type, price):
     if current_position is None:
         current_position = new_position
         entry_price = price
+        current_strike = strike   # ✅ NEW (safe add)
 
         action_log = f"Entered {new_position} at {price}"
 
@@ -84,6 +116,7 @@ def execute_trade(signal_type, price):
 
         trade_data = {
             "type": current_position,
+            "strike": current_strike,   # ✅ NEW (safe add)
             "entry": entry_price,
             "exit": price,
             "pnl": pnl,
@@ -91,17 +124,21 @@ def execute_trade(signal_type, price):
         }
 
         trades.append(trade_data)
-        trades_col.insert_one(trade_data)   # 🔥 SAVE TRADE
+        trades_col.insert_one(trade_data)
 
         action_log = f"EXIT {current_position} at {price} | PnL: {pnl:.2f}"
 
         current_position = new_position
         entry_price = price
+        current_strike = strike   # ✅ NEW
+
         action_log += f" → ENTER {new_position} at {price}"
 
     return action_log
 
 
+# -------------------------------
+# WEBHOOK
 # -------------------------------
 @app.route("/webhook", methods=["POST"])
 def webhook():
@@ -114,26 +151,61 @@ def webhook():
     parsed = parse_alert(msg)
 
     signal_type = parsed.get("Type")
-    price = float(parsed.get("Price", 0))
+    spot_price = float(parsed.get("Price", 0))
 
-    # 🔥 SAVE ALERT
+    # -----------------------------------
+    # STRIKE CALCULATION
+    # -----------------------------------
+    strike = get_strike(spot_price, signal_type)
+
+    # -----------------------------------
+    # FETCH OPTION CHAIN
+    # -----------------------------------
+    option_data = fetch_option_chain()
+
+    if not option_data:
+        return jsonify({"error": "Option chain fetch failed"}), 500
+
+    # -----------------------------------
+    # GET OPTION PREMIUM
+    # -----------------------------------
+    option_price = get_option_price(option_data, strike, signal_type)
+
+    if option_price is None or option_price == 0:
+        return jsonify({"error": "Invalid strike or illiquid option"}), 500
+
+    print(f"🎯 Trade -> {signal_type} | Spot: {spot_price} | Strike: {strike} | Option Price: {option_price}")
+
+    # -----------------------------------
+    # SAVE ALERT
+    # -----------------------------------
     alert_doc = {
         "raw_message": msg,
         "parsed": parsed,
+        "spot_price": spot_price,
+        "strike": strike,
+        "option_price": option_price,
         "time": datetime.utcnow()
     }
     alerts_col.insert_one(alert_doc)
 
-    result = execute_trade(signal_type, price)
+    # -----------------------------------
+    # EXECUTE TRADE
+    # -----------------------------------
+    result = execute_trade(signal_type, option_price, strike)
 
     return jsonify({
         "status": "success",
         "action": result,
         "capital": capital,
-        "current_position": current_position
+        "current_position": current_position,
+        "strike": strike,
+        "option_price": option_price
     })
 
 
+# -------------------------------
+# UI ROUTE
 # -------------------------------
 @app.route("/")
 def index():
@@ -142,10 +214,13 @@ def index():
         capital=round(capital, 2),
         position=current_position,
         entry=entry_price,
+        strike=current_strike,   # ✅ NEW
         trades=trades[::-1]
     )
 
 
+# -------------------------------
+# MAIN
 # -------------------------------
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
