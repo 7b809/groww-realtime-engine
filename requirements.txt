@@ -1,8 +1,4 @@
-fastapi
-uvicorn[standard]
-requests
-pandas
-numpy
-pytz
-jinja2
-httpx
+Flask
+pymongo
+python-dotenv
+gunicorn
