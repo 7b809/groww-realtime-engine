@@ -29,11 +29,33 @@ trades = []
 # -------------------------------
 def parse_alert(msg):
     data = {}
-    parts = msg.split(" ")
-    for part in parts:
-        if "=" in part:
-            key, val = part.split("=")
-            data[key] = val
+
+    try:
+        # Split first word (signal name)
+        parts = msg.split(" ", 1)
+        data["Signal"] = parts[0]
+
+        rest = parts[1]
+
+        # Extract fields safely
+        import re
+
+        time_match = re.search(r"Time=([0-9\-: ]+)", rest)
+        price_match = re.search(r"Price=([0-9\.]+)", rest)
+        type_match = re.search(r"Type=([a-zA-Z]+)", rest)
+
+        if time_match:
+            data["Time"] = time_match.group(1)
+
+        if price_match:
+            data["Price"] = price_match.group(1)
+
+        if type_match:
+            data["Type"] = type_match.group(1)
+
+    except Exception as e:
+        data["error"] = str(e)
+
     return data
 
 
