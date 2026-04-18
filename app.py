@@ -217,7 +217,7 @@ def index():
         strike=current_strike,   # ✅ NEW
         trades=trades[::-1]
     )
-
+ 
 
 # -------------------------------
 # MAIN
